@@ -127,6 +127,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get languageEnglish;
+
+  /// Bills page: button opening the bill templates page
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get billsTemplatesButton;
+
+  /// Bill templates page title
+  ///
+  /// In en, this message translates to:
+  /// **'Bill templates'**
+  String get billTemplatesTitle;
+
+  /// Bill category: personal
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get billCategoryPersonal;
+
+  /// Bill category: company
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get billCategoryCompany;
+
+  /// Bills page: empty category section
+  ///
+  /// In en, this message translates to:
+  /// **'No bills. Add a template.'**
+  String get billsEmpty;
+
+  /// Bill templates page: empty category section
+  ///
+  /// In en, this message translates to:
+  /// **'No templates'**
+  String get billTemplatesEmpty;
+
+  /// Bill templates page: new template name placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Bill name'**
+  String get billTemplateNameHint;
+
+  /// Bill templates page: add template button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get billTemplateAdd;
+
+  /// Bill templates page: delete template button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}'**
+  String billTemplateDelete(String name);
+
+  /// Back button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// Bills page: previous month button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// Bills page: next month button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// Generic data loading error
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load data'**
+  String get loadError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

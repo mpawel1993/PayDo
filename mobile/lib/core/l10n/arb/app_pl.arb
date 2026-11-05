@@ -5,5 +5,18 @@
   "navSettings": "Ustawienia",
   "settingsLanguage": "Język",
   "languagePolish": "Polski",
-  "languageEnglish": "Angielski"
+  "languageEnglish": "Angielski",
+  "billsTemplatesButton": "Szablony",
+  "billTemplatesTitle": "Szablony rachunków",
+  "billCategoryPersonal": "Osobiste",
+  "billCategoryCompany": "Firmowe",
+  "billsEmpty": "Brak rachunków. Dodaj szablon.",
+  "billTemplatesEmpty": "Brak szablonów",
+  "billTemplateNameHint": "Nazwa rachunku",
+  "billTemplateAdd": "Dodaj",
+  "billTemplateDelete": "Usuń {name}",
+  "back": "Wstecz",
+  "previousMonth": "Poprzedni miesiąc",
+  "nextMonth": "Następny miesiąc",
+  "loadError": "Nie udało się wczytać danych"
 }

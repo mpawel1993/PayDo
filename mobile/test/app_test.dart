@@ -7,11 +7,13 @@ import 'package:paydo/core/theme/app_colors.dart';
 import 'package:paydo/features/navigation/presentation/app_shell.dart';
 import 'package:paydo/features/settings/domain/app_language.dart';
 
+import 'support/fakes/in_memory_bills_repository.dart';
 import 'support/fakes/in_memory_settings_repository.dart';
 import 'support/overrides.dart';
 
-Future<void> _pump(WidgetTester tester, InMemorySettingsRepository repository) =>
-    tester.pumpWidget(ProviderScope(overrides: settingsOverrides(repository), child: const App()));
+Future<void> _pump(WidgetTester tester, InMemorySettingsRepository repository) => tester.pumpWidget(
+  ProviderScope(overrides: [...settingsOverrides(repository), ...billsOverrides(InMemoryBillsRepository())], child: const App()),
+);
 
 void main() {
   testWidgets('shows only the background while the language is loading, then the shell', (tester) async {

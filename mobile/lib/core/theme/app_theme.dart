@@ -71,7 +71,9 @@ ThemeData buildAppTheme() {
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.pressed)
+          (states) => states.contains(WidgetState.disabled)
+              ? AppColors.primary.withValues(alpha: 0.6)
+              : states.contains(WidgetState.pressed)
               ? AppColors.primaryActive
               : states.contains(WidgetState.hovered)
               ? AppColors.primaryHover

@@ -15,6 +15,21 @@ void main() {
     }
   });
 
+  test('per-entity TestIds follow the same format', () {
+    final format = RegExp(r'^[a-z0-9_]+(\.[a-z0-9_]+)+$');
+    final ids = [
+      TestIds.billsMonth(202611),
+      TestIds.billsSectionTitle(202611, 'personal'),
+      TestIds.billsRowCheckbox(202611, 7),
+      TestIds.billTemplatesAddIcon('company'),
+      TestIds.billTemplatesRowDeleteIcon(7),
+    ];
+    for (final id in ids) {
+      expect(format.hasMatch(id), isTrue, reason: id);
+      expect(TestIds.all, isNot(contains(id)));
+    }
+  });
+
   testWidgets('testId() applies both a ValueKey and a Semantics identifier', (tester) async {
     await tester.pumpWidget(const Directionality(textDirection: TextDirection.ltr, child: Text('x')).testId('test.sample'));
 

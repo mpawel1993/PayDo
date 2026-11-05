@@ -6,6 +6,7 @@ import 'package:paydo/core/testing/test_ids.dart';
 import 'package:paydo/features/settings/domain/app_language.dart';
 import 'package:paydo/features/settings/presentation/settings_page.dart';
 
+import '../../../support/fakes/in_memory_bills_repository.dart';
 import '../../../support/fakes/in_memory_settings_repository.dart';
 import '../../../support/overrides.dart';
 import '../../../support/pump_app.dart';
@@ -47,7 +48,9 @@ void main() {
 
   testWidgets('selecting English in the app switches every text to English and saves it', (tester) async {
     final repository = InMemorySettingsRepository();
-    await tester.pumpWidget(ProviderScope(overrides: settingsOverrides(repository), child: const App()));
+    await tester.pumpWidget(
+      ProviderScope(overrides: [...settingsOverrides(repository), ...billsOverrides(InMemoryBillsRepository())], child: const App()),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(_id(TestIds.navigationTabSettings));
