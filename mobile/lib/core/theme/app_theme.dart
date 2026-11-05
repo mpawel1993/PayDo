@@ -170,10 +170,29 @@ ThemeData buildAppTheme() {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.card))),
     ),
-    navigationBarTheme: const NavigationBarThemeData(
+    navigationBarTheme: NavigationBarThemeData(
       backgroundColor: AppColors.surface,
       surfaceTintColor: Colors.transparent,
+      elevation: 0,
       indicatorColor: AppColors.highlight,
+      indicatorShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.field)),
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: AppFontSize.xs,
+          fontWeight: FontWeight.w500,
+          color: states.contains(WidgetState.selected) ? AppColors.primary : AppColors.textMuted,
+        ),
+      ),
+    ),
+    listTileTheme: ListTileThemeData(
+      textColor: AppColors.text,
+      iconColor: AppColors.textMuted,
+      selectedColor: AppColors.text,
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      shape: _fieldShape,
+      titleTextStyle: const TextStyle(fontFamily: appFontFamily, fontSize: AppFontSize.base, color: AppColors.text),
     ),
   );
 }

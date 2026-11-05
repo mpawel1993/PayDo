@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "navBills": "Bills",
+  "@navBills": { "description": "Bottom navigation: bills tab label and page title" },
+  "navTodo": "Todo",
+  "@navTodo": { "description": "Bottom navigation: todo tab label and page title" },
+  "navSettings": "Settings",
+  "@navSettings": { "description": "Bottom navigation: settings tab label and page title" },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": { "description": "Settings: language section label" },
+  "languagePolish": "Polish",
+  "@languagePolish": { "description": "Language option: Polish" },
+  "languageEnglish": "English",
+  "@languageEnglish": { "description": "Language option: English" }
+}
