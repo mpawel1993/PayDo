@@ -20,10 +20,11 @@ void main() {
   final dec = YearMonth(2026, 12);
   final paidAt = DateTime.utc(2026, 11, 6, 12);
   final due = CalendarDate(2026, 11, 20);
+  final now = DateTime.utc(2026, 11, 6, 9);
 
   setUp(() async {
     db = await openTestDatabase();
-    repository = SqliteBillsRepository(db);
+    repository = SqliteBillsRepository(db, now: () => now);
   });
   tearDown(() async => db.close());
 
@@ -51,7 +52,7 @@ void main() {
       expect(row['category'], 'company');
       expect(row['start_month'], 202611);
       expect(row['end_month'], isNull);
-      expect(row['created_at'], isA<int>());
+      expect(row['created_at'], now.millisecondsSinceEpoch);
     });
 
     test('archiveTemplate() sets the end month', () async {

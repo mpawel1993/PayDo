@@ -1,5 +1,6 @@
 {
   "@@locale": "pl",
+  "appTitle": "PayDo",
   "navBills": "Rachunki",
   "navTodo": "Todo",
   "navSettings": "Ustawienia",

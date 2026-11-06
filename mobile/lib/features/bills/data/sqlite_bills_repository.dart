@@ -10,12 +10,13 @@ import '../domain/year_month.dart';
 import 'bill_template_row.dart';
 
 final class SqliteBillsRepository implements BillsRepository {
-  const SqliteBillsRepository(this._database);
+  const SqliteBillsRepository(this._database, {DateTime Function() now = DateTime.now}) : _now = now;
 
   static const templatesTable = 'bill_templates';
   static const entriesTable = 'bill_entries';
 
   final AppDatabase _database;
+  final DateTime Function() _now;
 
   Database get _db => _database.db;
 
@@ -38,7 +39,7 @@ final class SqliteBillsRepository implements BillsRepository {
       startMonth: startMonth.key,
       endMonth: null,
       dueDay: dueDay,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: _now().millisecondsSinceEpoch,
     );
     final id = await _db.insert(templatesTable, row.toRow());
     return BillTemplate(id: id, name: name, category: category, startMonth: startMonth, dueDay: dueDay);

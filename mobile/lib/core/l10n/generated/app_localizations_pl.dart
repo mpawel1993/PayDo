@@ -9,6 +9,9 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
+  String get appTitle => 'PayDo';
+
+  @override
   String get navBills => 'Rachunki';
 
   @override

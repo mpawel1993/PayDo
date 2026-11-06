@@ -92,6 +92,12 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('pl')];
 
+  /// App name shown by the OS (task switcher, browser tab)
+  ///
+  /// In en, this message translates to:
+  /// **'PayDo'**
+  String get appTitle;
+
   /// Bottom navigation: bills tab label and page title
   ///
   /// In en, this message translates to:

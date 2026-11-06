@@ -28,6 +28,13 @@ void main() {
     expect(find.byType(AppShell), findsOneWidget);
   });
 
+  testWidgets('takes the window title from l10n', (tester) async {
+    await _pump(tester, InMemorySettingsRepository());
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<Title>(find.byType(Title)).title, 'PayDo');
+  });
+
   testWidgets('uses Polish by default', (tester) async {
     await _pump(tester, InMemorySettingsRepository());
     await tester.pumpAndSettle();

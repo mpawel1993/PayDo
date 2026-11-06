@@ -23,7 +23,7 @@ class App extends ConsumerWidget {
       child: language == null
           ? const ColoredBox(color: AppColors.background, child: SizedBox.expand()).testId(TestIds.appLoading)
           : MaterialApp(
-              title: 'PayDo',
+              onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
               theme: buildAppTheme(),
               themeMode: ThemeMode.dark,
               debugShowCheckedModeBanner: false,

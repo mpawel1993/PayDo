@@ -1,5 +1,7 @@
 {
   "@@locale": "en",
+  "appTitle": "PayDo",
+  "@appTitle": { "description": "App name shown by the OS (task switcher, browser tab)" },
   "navBills": "Bills",
   "@navBills": { "description": "Bottom navigation: bills tab label and page title" },
   "navTodo": "Todo",

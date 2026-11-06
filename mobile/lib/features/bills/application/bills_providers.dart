@@ -18,7 +18,7 @@ import 'bills_facade.dart';
 import 'l10n_reminder_messages.dart';
 
 final billsRepositoryProvider = FutureProvider<BillsRepository>(
-  (ref) async => SqliteBillsRepository(await ref.watch(appDatabaseProvider.future)),
+  (ref) async => SqliteBillsRepository(await ref.watch(appDatabaseProvider.future), now: ref.watch(clockState)),
 );
 
 final billsFacadeProvider = FutureProvider<BillsFacade>(
