@@ -4,6 +4,7 @@ import 'package:paydo/features/bills/application/bills_facade.dart';
 import 'package:paydo/features/bills/data/sqlite_bills_repository.dart';
 import 'package:paydo/features/bills/domain/bill_category.dart';
 import 'package:paydo/features/bills/domain/bills_error.dart';
+import 'package:paydo/features/bills/domain/calendar_date.dart';
 import 'package:paydo/features/bills/domain/year_month.dart';
 
 import '../../../support/open_test_database.dart';
@@ -25,8 +26,9 @@ void main() {
   });
   tearDown(() async => db.close());
 
-  test('currentMonth follows the clock', () {
+  test('currentMonth and today follow the clock', () {
     expect(facade.currentMonth, nov);
+    expect(facade.today, CalendarDate(2026, 11, 6));
     now = DateTime(2027, 1, 1);
     expect(facade.currentMonth, YearMonth(2027, 1));
   });
@@ -69,26 +71,64 @@ void main() {
     });
   });
 
-  group('monthBills() and setPaid()', () {
-    test('lists the month bills with their payments', () async {
+  group('monthBills(), setPaid() and setDueDate()', () {
+    test('lists the month bills with their entries', () async {
       final rent = await facade.addTemplate('Rent', BillCategory.personal);
       final zus = await facade.addTemplate('ZUS', BillCategory.company);
       await facade.setPaid(zus.id, nov, paid: true);
+      await facade.setDueDate(rent.id, nov, CalendarDate(2026, 11, 20));
 
       final templates = await facade.templates();
       final bills = await facade.monthBills(nov, templates);
 
       expect(bills.month, nov);
-      expect(bills.bills.map((b) => (b.template.id, b.paid)), [(rent.id, false), (zus.id, true)]);
-      expect((await facade.monthBills(dec, templates)).bills.every((b) => !b.paid), isTrue);
+      expect(bills.bills.map((b) => (b.template.id, b.paid, b.dueDate)), [
+        (rent.id, false, CalendarDate(2026, 11, 20)),
+        (zus.id, true, null),
+      ]);
+      expect((await facade.monthBills(dec, templates)).bills.every((b) => !b.paid && b.dueDate == null), isTrue);
       expect((await facade.monthBills(oct, templates)).bills, isEmpty);
+    });
+
+    test('setPaid(true) saves the current moment as UTC and returns it', () async {
+      final rent = await facade.addTemplate('Rent', BillCategory.personal);
+
+      final paidAt = await facade.setPaid(rent.id, nov, paid: true);
+
+      expect(paidAt, now.toUtc());
+      expect((await facade.monthBills(nov, await facade.templates())).bills.single.paidAt, now.toUtc());
     });
 
     test('setPaid(false) clears the payment', () async {
       final rent = await facade.addTemplate('Rent', BillCategory.personal);
       await facade.setPaid(rent.id, nov, paid: true);
-      await facade.setPaid(rent.id, nov, paid: false);
+
+      expect(await facade.setPaid(rent.id, nov, paid: false), isNull);
       expect((await facade.monthBills(nov, await facade.templates())).bills.single.paid, isFalse);
+    });
+  });
+
+  group('due day and editing', () {
+    test('addTemplate() stores an optional due day', () async {
+      final t = await facade.addTemplate('Rent', BillCategory.personal, dueDay: 10);
+      expect(t.dueDay, 10);
+      expect((await facade.monthBills(nov, await facade.templates())).bills.single.dueDate, CalendarDate(2026, 11, 10));
+    });
+
+    test('addTemplate() rejects an invalid due day without writing', () async {
+      await expectLater(facade.addTemplate('Rent', BillCategory.personal, dueDay: 32), throwsA(isA<InvalidDueDay>()));
+      expect(await facade.templates(), isEmpty);
+    });
+
+    test('updateTemplate() validates and stores the name and due day', () async {
+      final t = await facade.addTemplate('Rent', BillCategory.personal, dueDay: 10);
+
+      await facade.updateTemplate(t, name: '  Czynsz ', dueDay: null);
+      expect((await facade.templates()).single, t.copyWith(name: 'Czynsz').withDueDay(null));
+
+      await expectLater(facade.updateTemplate(t, name: ' ', dueDay: 5), throwsA(isA<EmptyBillName>()));
+      await expectLater(facade.updateTemplate(t, name: 'X', dueDay: 0), throwsA(isA<InvalidDueDay>()));
+      expect((await facade.templates()).single.name, 'Czynsz');
     });
   });
 }

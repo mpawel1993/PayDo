@@ -21,4 +21,17 @@ final List<Migration> appMigrations = [
         PRIMARY KEY (template_id, month)
       )''');
   }),
+  Migration(4, (db) async {
+    await db.execute('''
+      CREATE TABLE bill_entries (
+        template_id INTEGER NOT NULL REFERENCES bill_templates (id) ON DELETE CASCADE,
+        month INTEGER NOT NULL,
+        due_date INTEGER,
+        paid_at INTEGER,
+        PRIMARY KEY (template_id, month)
+      )''');
+    await db.execute('INSERT INTO bill_entries (template_id, month, paid_at) SELECT template_id, month, paid_at FROM bill_payments');
+    await db.execute('DROP TABLE bill_payments');
+  }),
+  Migration(5, (db) => db.execute('ALTER TABLE bill_templates ADD COLUMN due_day INTEGER')),
 ];

@@ -98,6 +98,42 @@ ThemeData buildAppTheme() {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     ),
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: AppColors.surface,
+      surfaceTintColor: Colors.transparent,
+      shape: _cardShape,
+      headerBackgroundColor: AppColors.surface,
+      headerForegroundColor: AppColors.text,
+      dividerColor: AppColors.border,
+      weekdayStyle: const TextStyle(fontFamily: appFontFamily, fontSize: AppFontSize.xs, color: AppColors.textMuted),
+      dayStyle: const TextStyle(fontFamily: appFontFamily, fontSize: AppFontSize.xs),
+      dayForegroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? AppColors.primaryContrast
+            : states.contains(WidgetState.disabled)
+            ? AppColors.placeholder
+            : AppColors.text,
+      ),
+      dayBackgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? AppColors.primary : Colors.transparent,
+      ),
+      dayOverlayColor: WidgetStatePropertyAll(AppColors.primary.withValues(alpha: 0.16)),
+      todayForegroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? AppColors.primaryContrast : AppColors.primary,
+      ),
+      todayBackgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? AppColors.primary : Colors.transparent,
+      ),
+      todayBorder: const BorderSide(color: AppColors.primary),
+      yearForegroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? AppColors.primaryContrast : AppColors.text,
+      ),
+      yearBackgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? AppColors.primary : Colors.transparent,
+      ),
+      cancelButtonStyle: textButtonSeverity(AppColors.textMuted),
+      confirmButtonStyle: textButtonSeverity(AppColors.primary),
+    ),
     dialogTheme: DialogThemeData(backgroundColor: AppColors.surface, surfaceTintColor: Colors.transparent, shape: _cardShape),
     menuTheme: MenuThemeData(
       style: MenuStyle(

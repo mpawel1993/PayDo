@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum PrimeIcon { arrowLeft, check, chevronLeft, chevronRight, cog, listCheck, plus, receipt, trash }
+enum PrimeIcon { arrowLeft, calendar, check, chevronLeft, chevronRight, cog, listCheck, pencil, plus, receipt, shoppingCart, trash }
 
 class AppIcon extends StatelessWidget {
   const AppIcon(this.icon, {super.key, required this.color, this.size = 16});

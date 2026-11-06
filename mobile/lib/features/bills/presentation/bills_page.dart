@@ -65,7 +65,6 @@ class _BillsPageState extends ConsumerState<BillsPage> {
           Expanded(
             child: PageView.builder(
               controller: _controller,
-              reverse: true,
               itemCount: window.length,
               onPageChanged: (index) => ref.read(selectedMonthState.notifier).select(window.monthAt(index)),
               itemBuilder: (_, index) => MonthBillsView(month: window.monthAt(index)),

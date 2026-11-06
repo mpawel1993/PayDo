@@ -205,6 +205,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load data'**
   String get loadError;
+
+  /// Bottom navigation: shopping tab label and page title
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get navShopping;
+
+  /// Bills page: due date of a bill
+  ///
+  /// In en, this message translates to:
+  /// **'Due: {date}'**
+  String billDueDate(DateTime date);
+
+  /// Bills page: date the bill was paid
+  ///
+  /// In en, this message translates to:
+  /// **'Paid: {date}'**
+  String billPaidOn(DateTime date);
+
+  /// Bills page: due date button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Set due date of {name}'**
+  String billSetDueDate(String name);
+
+  /// Overdue bill notification title
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid bill'**
+  String get reminderTitle;
+
+  /// Overdue bill notification body
+  ///
+  /// In en, this message translates to:
+  /// **'{name} – payment was due {date}. Mark the bill as paid.'**
+  String reminderBody(String name, DateTime date);
+
+  /// Android notification channel name for overdue bill reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Bill reminders'**
+  String get reminderChannelName;
+
+  /// Bill templates: optional due day of month field placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get billTemplateDueDayHint;
+
+  /// Bill templates: due day calendar title
+  ///
+  /// In en, this message translates to:
+  /// **'Due day of the month'**
+  String get billTemplateDueDayPickerTitle;
+
+  /// Bill templates: due day calendar option to clear the day
+  ///
+  /// In en, this message translates to:
+  /// **'No due day'**
+  String get billTemplateNoDueDay;
+
+  /// Bill templates: default due day of a template
+  ///
+  /// In en, this message translates to:
+  /// **'Due on day {day}'**
+  String billTemplateDueDay(int day);
+
+  /// Bill templates: edit button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name}'**
+  String billTemplateEdit(String name);
+
+  /// Bill templates: edit dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Edit template'**
+  String get billTemplateEditTitle;
+
+  /// Save button
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// Cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Confirmation dialog: yes
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// Confirmation dialog: no
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// Confirmation before deleting a bill template
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the template “{name}”?'**
+  String confirmDeleteTemplate(String name);
+
+  /// Confirmation before saving bill template changes
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to save changes to the template “{name}”?'**
+  String confirmEditTemplate(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

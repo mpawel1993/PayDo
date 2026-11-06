@@ -66,4 +66,86 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadError => 'Could not load data';
+
+  @override
+  String get navShopping => 'Shopping';
+
+  @override
+  String billDueDate(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return 'Due: $dateString';
+  }
+
+  @override
+  String billPaidOn(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return 'Paid: $dateString';
+  }
+
+  @override
+  String billSetDueDate(String name) {
+    return 'Set due date of $name';
+  }
+
+  @override
+  String get reminderTitle => 'Unpaid bill';
+
+  @override
+  String reminderBody(String name, DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$name – payment was due $dateString. Mark the bill as paid.';
+  }
+
+  @override
+  String get reminderChannelName => 'Bill reminders';
+
+  @override
+  String get billTemplateDueDayHint => 'Day';
+
+  @override
+  String get billTemplateDueDayPickerTitle => 'Due day of the month';
+
+  @override
+  String get billTemplateNoDueDay => 'No due day';
+
+  @override
+  String billTemplateDueDay(int day) {
+    return 'Due on day $day';
+  }
+
+  @override
+  String billTemplateEdit(String name) {
+    return 'Edit $name';
+  }
+
+  @override
+  String get billTemplateEditTitle => 'Edit template';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String confirmDeleteTemplate(String name) {
+    return 'Are you sure you want to delete the template “$name”?';
+  }
+
+  @override
+  String confirmEditTemplate(String name) {
+    return 'Are you sure you want to save changes to the template “$name”?';
+  }
 }

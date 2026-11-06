@@ -7,10 +7,12 @@ import '../../../core/testing/test_ids.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_checkbox.dart';
+import '../../../core/widgets/app_icon.dart';
 import '../../../core/widgets/app_page.dart';
 import '../application/bills_state.dart';
 import '../domain/bill.dart';
 import '../domain/bill_category.dart';
+import '../domain/calendar_date.dart';
 import '../domain/month_bills.dart';
 import '../domain/year_month.dart';
 import 'bills_l10n.dart';
@@ -93,11 +95,32 @@ class _BillRow extends ConsumerWidget {
 
   final Bill bill;
 
+  static DateTime _day(CalendarDate d) => DateTime(d.year, d.month, d.day);
+
+  Future<void> _pickDueDate(BuildContext context, WidgetRef ref, CalendarDate today) async {
+    final initial = bill.dueDate ?? (bill.month == today.yearMonth ? today : CalendarDate(bill.month.year, bill.month.month, 1));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _day(initial),
+      firstDate: DateTime(bill.month.year - 1),
+      lastDate: DateTime(bill.month.year + 2, 12, 31),
+    );
+    if (picked != null) {
+      await ref.read(monthBillsState(bill.month).notifier).setDueDate(bill.template.id, CalendarDate.fromDateTime(picked));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = bill.statusAt(ref.watch(currentMonthState));
+    final l10n = AppLocalizations.of(context);
+    final today = ref.watch(todayState);
+    final status = bill.statusAt(today);
     final id = bill.template.id;
     final key = bill.month.key;
+    final details = [
+      if (bill.dueDate case final due?) l10n.billDueDate(_day(due)),
+      if (bill.paidAt case final paidAt?) l10n.billPaidOn(paidAt.toLocal()),
+    ];
     void toggle() => ref.read(monthBillsState(bill.month).notifier).togglePaid(id);
 
     return GestureDetector(
@@ -110,23 +133,47 @@ class _BillRow extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppRadius.field),
         ),
         child: Row(
-          spacing: 6,
+          spacing: 2,
           children: [
             Expanded(
-              child: Text(
-                bill.template.name,
-                style: switch (status) {
-                  BillStatus.paid => const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: AppFontSize.base,
-                    decoration: TextDecoration.lineThrough,
-                    decorationColor: AppColors.textMuted,
-                  ),
-                  BillStatus.overdue => const TextStyle(color: AppColors.danger, fontSize: AppFontSize.base),
-                  BillStatus.due => const TextStyle(color: AppColors.text, fontSize: AppFontSize.base),
-                },
-              ).testId(TestIds.billsRowName(key, id)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    bill.template.name,
+                    style: switch (status) {
+                      BillStatus.paid => const TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: AppFontSize.base,
+                        decoration: TextDecoration.lineThrough,
+                        decorationColor: AppColors.textMuted,
+                      ),
+                      BillStatus.overdue => const TextStyle(color: AppColors.danger, fontSize: AppFontSize.base),
+                      BillStatus.due => const TextStyle(color: AppColors.text, fontSize: AppFontSize.base),
+                    },
+                  ).testId(TestIds.billsRowName(key, id)),
+                  if (details.isNotEmpty)
+                    Text(
+                      details.join(' · '),
+                      style: TextStyle(
+                        color: status == BillStatus.overdue ? AppColors.danger : AppColors.textMuted,
+                        fontSize: AppFontSize.xs,
+                      ),
+                    ).testId(TestIds.billsRowDetails(key, id)),
+                ],
+              ),
             ),
+            Semantics(
+              label: l10n.billSetDueDate(bill.template.name),
+              button: true,
+              child: TextButton(
+                onPressed: () => _pickDueDate(context, ref, today),
+                child: AppIcon(
+                  PrimeIcon.calendar,
+                  color: bill.dueDate == null ? AppColors.textMuted : AppColors.primary,
+                ).testId(TestIds.billsRowDueDateIcon(key, id)),
+              ),
+            ).testId(TestIds.billsRowDueDate(key, id)),
             AppCheckbox(id: TestIds.billsRowCheckbox(key, id), value: bill.paid, onChanged: (_) => toggle(), label: bill.template.name),
           ],
         ),

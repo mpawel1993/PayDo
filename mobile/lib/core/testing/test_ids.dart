@@ -7,6 +7,8 @@ abstract final class TestIds {
   static const navigationTabBillsIcon = 'navigation.tab_bills_icon';
   static const navigationTabTodo = 'navigation.tab_todo';
   static const navigationTabTodoIcon = 'navigation.tab_todo_icon';
+  static const navigationTabShopping = 'navigation.tab_shopping';
+  static const navigationTabShoppingIcon = 'navigation.tab_shopping_icon';
   static const navigationTabSettings = 'navigation.tab_settings';
   static const navigationTabSettingsIcon = 'navigation.tab_settings_icon';
 
@@ -28,6 +30,9 @@ abstract final class TestIds {
   static String billsRow(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId';
   static String billsRowName(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId.name';
   static String billsRowCheckbox(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId.checkbox';
+  static String billsRowDetails(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId.details';
+  static String billsRowDueDate(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId.due_date';
+  static String billsRowDueDateIcon(int monthKey, int templateId) => 'bills.month.$monthKey.row.$templateId.due_date_icon';
 
   static const billTemplatesPage = 'bill_templates.page';
   static const billTemplatesTitle = 'bill_templates.title';
@@ -45,9 +50,33 @@ abstract final class TestIds {
   static String billTemplatesRowName(int id) => 'bill_templates.row.$id.name';
   static String billTemplatesRowDelete(int id) => 'bill_templates.row.$id.delete';
   static String billTemplatesRowDeleteIcon(int id) => 'bill_templates.row.$id.delete_icon';
+  static String billTemplatesRowDetails(int id) => 'bill_templates.row.$id.details';
+  static String billTemplatesRowEdit(int id) => 'bill_templates.row.$id.edit';
+  static String billTemplatesRowEditIcon(int id) => 'bill_templates.row.$id.edit_icon';
+  static String billTemplatesDueDayInput(String category) => 'bill_templates.section.$category.due_day_input';
+  static const billTemplatesEditDialog = 'bill_templates.edit_dialog';
+  static const billTemplatesEditTitle = 'bill_templates.edit_dialog.title';
+  static const billTemplatesEditName = 'bill_templates.edit_dialog.name';
+  static const billTemplatesEditDueDay = 'bill_templates.edit_dialog.due_day';
+  static const billTemplatesEditSave = 'bill_templates.edit_dialog.save';
+  static const billTemplatesEditCancel = 'bill_templates.edit_dialog.cancel';
+
+  static const confirmDialog = 'dialog.confirm';
+  static const confirmDialogMessage = 'dialog.confirm.message';
+  static const confirmDialogYes = 'dialog.confirm.yes';
+  static const confirmDialogNo = 'dialog.confirm.no';
+
+  static const dayPicker = 'dialog.day_picker';
+  static const dayPickerTitle = 'dialog.day_picker.title';
+  static const dayPickerClear = 'dialog.day_picker.clear';
+  static const dayPickerCancel = 'dialog.day_picker.cancel';
+  static String dayPickerDay(int day) => 'dialog.day_picker.day_$day';
 
   static const todoPage = 'todo.page';
   static const todoTitle = 'todo.title';
+
+  static const shoppingPage = 'shopping.page';
+  static const shoppingTitle = 'shopping.title';
 
   static const settingsPage = 'settings.page';
   static const settingsTitle = 'settings.title';
@@ -64,6 +93,8 @@ abstract final class TestIds {
     navigationTabBillsIcon,
     navigationTabTodo,
     navigationTabTodoIcon,
+    navigationTabShopping,
+    navigationTabShoppingIcon,
     navigationTabSettings,
     navigationTabSettingsIcon,
     billsPage,
@@ -81,8 +112,24 @@ abstract final class TestIds {
     billTemplatesBackIcon,
     billTemplatesLoading,
     billTemplatesError,
+    billTemplatesEditDialog,
+    billTemplatesEditTitle,
+    billTemplatesEditName,
+    billTemplatesEditDueDay,
+    billTemplatesEditSave,
+    billTemplatesEditCancel,
+    confirmDialog,
+    confirmDialogMessage,
+    confirmDialogYes,
+    confirmDialogNo,
+    dayPicker,
+    dayPickerTitle,
+    dayPickerClear,
+    dayPickerCancel,
     todoPage,
     todoTitle,
+    shoppingPage,
+    shoppingTitle,
     settingsPage,
     settingsTitle,
     settingsLanguageLabel,

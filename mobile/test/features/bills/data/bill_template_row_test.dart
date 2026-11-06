@@ -15,6 +15,7 @@ void main() {
         .inCategory(BillCategory.company)
         .startingAt(YearMonth(2026, 3))
         .endingAt(YearMonth(2026, 11))
+        .withDueDay(10)
         .build();
 
     final row = BillTemplateRow.fromDomain(template, createdAt: createdAt).toRow();
@@ -25,6 +26,7 @@ void main() {
       'category': 'company',
       'start_month': 202603,
       'end_month': 202611,
+      'due_day': 10,
       'created_at': createdAt.millisecondsSinceEpoch,
     });
     expect(BillTemplateRow.fromRow(row).toDomain(), template);

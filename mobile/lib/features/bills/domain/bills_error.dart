@@ -17,3 +17,9 @@ final class BillTemplateNotFound extends BillsError {
 
   final int id;
 }
+
+final class InvalidDueDay extends BillsError {
+  const InvalidDueDay(this.day);
+
+  final int day;
+}

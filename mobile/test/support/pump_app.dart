@@ -7,6 +7,7 @@ import 'package:paydo/core/theme/app_theme.dart';
 
 import 'fakes/in_memory_bills_repository.dart';
 import 'fakes/in_memory_settings_repository.dart';
+import 'fakes/recording_notification_scheduler.dart';
 import 'overrides.dart';
 
 final testNow = DateTime(2026, 11, 6, 10);
@@ -17,13 +18,14 @@ Future<void> pumpApp(
   Locale locale = const Locale('pl'),
   InMemorySettingsRepository? settings,
   InMemoryBillsRepository? bills,
+  RecordingNotificationScheduler? scheduler,
   DateTime? now,
   List<Override> overrides = const [],
 }) => tester.pumpWidget(
   ProviderScope(
     overrides: [
       ...settingsOverrides(settings ?? InMemorySettingsRepository()),
-      ...billsOverrides(bills ?? InMemoryBillsRepository()),
+      ...billsOverrides(bills ?? InMemoryBillsRepository(), scheduler: scheduler),
       clockOverride(now ?? testNow),
       ...overrides,
     ],

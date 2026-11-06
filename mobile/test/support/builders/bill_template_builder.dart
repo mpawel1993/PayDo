@@ -8,6 +8,7 @@ final class BillTemplateBuilder {
   BillCategory _category = BillCategory.personal;
   YearMonth _startMonth = YearMonth(2026, 1);
   YearMonth? _endMonth;
+  int? _dueDay;
 
   BillTemplateBuilder withId(int id) => this.._id = id;
 
@@ -19,5 +20,8 @@ final class BillTemplateBuilder {
 
   BillTemplateBuilder endingAt(YearMonth month) => this.._endMonth = month;
 
-  BillTemplate build() => BillTemplate(id: _id, name: _name, category: _category, startMonth: _startMonth, endMonth: _endMonth);
+  BillTemplateBuilder withDueDay(int? day) => this.._dueDay = day;
+
+  BillTemplate build() =>
+      BillTemplate(id: _id, name: _name, category: _category, startMonth: _startMonth, endMonth: _endMonth, dueDay: _dueDay);
 }

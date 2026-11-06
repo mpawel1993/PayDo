@@ -4,8 +4,8 @@ import 'package:paydo/features/navigation/application/tab_state.dart';
 import 'package:paydo/features/navigation/domain/app_tab.dart';
 
 void main() {
-  test('tabs are ordered Bills, Todo, Settings and start on Bills', () {
-    expect(AppTab.values, [AppTab.bills, AppTab.todo, AppTab.settings]);
+  test('tabs are ordered Bills, Todo, Shopping, Settings and start on Bills', () {
+    expect(AppTab.values, [AppTab.bills, AppTab.todo, AppTab.shopping, AppTab.settings]);
     expect(AppTab.initial, AppTab.bills);
   });
 

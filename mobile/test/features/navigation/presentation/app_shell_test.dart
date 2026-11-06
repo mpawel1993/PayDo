@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:paydo/core/testing/test_ids.dart';
 import 'package:paydo/features/navigation/presentation/app_shell.dart';
 
+import '../../../support/fakes/recording_notification_scheduler.dart';
 import '../../../support/pump_app.dart';
 
 Finder _id(String id) => find.byKey(ValueKey<String>(id));
@@ -11,15 +12,21 @@ String _label(WidgetTester tester, String tabId) =>
     tester.widget<NavigationDestination>(find.descendant(of: _id(tabId), matching: find.byType(NavigationDestination))).label;
 
 void main() {
-  testWidgets('shows a bottom bar with Rachunki, Todo, Ustawienia in Polish', (tester) async {
+  testWidgets('shows a bottom bar with Rachunki, Todo, Zakupy, Ustawienia in Polish', (tester) async {
     await pumpApp(tester, const AppShell());
     await tester.pump();
 
     expect(_id(TestIds.navigationBar), findsOneWidget);
     expect(_label(tester, TestIds.navigationTabBills), 'Rachunki');
     expect(_label(tester, TestIds.navigationTabTodo), 'Todo');
+    expect(_label(tester, TestIds.navigationTabShopping), 'Zakupy');
     expect(_label(tester, TestIds.navigationTabSettings), 'Ustawienia');
-    for (final id in [TestIds.navigationTabBillsIcon, TestIds.navigationTabTodoIcon, TestIds.navigationTabSettingsIcon]) {
+    for (final id in [
+      TestIds.navigationTabBillsIcon,
+      TestIds.navigationTabTodoIcon,
+      TestIds.navigationTabShoppingIcon,
+      TestIds.navigationTabSettingsIcon,
+    ]) {
       expect(_id(id), findsOneWidget);
     }
   });
@@ -30,6 +37,7 @@ void main() {
 
     expect(_label(tester, TestIds.navigationTabBills), 'Bills');
     expect(_label(tester, TestIds.navigationTabTodo), 'Todo');
+    expect(_label(tester, TestIds.navigationTabShopping), 'Shopping');
     expect(_label(tester, TestIds.navigationTabSettings), 'Settings');
   });
 
@@ -53,14 +61,28 @@ void main() {
     expect(_id(TestIds.billsPage), findsNothing);
     expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
 
+    await tester.tap(_id(TestIds.navigationTabShopping));
+    await tester.pumpAndSettle();
+    expect(_id(TestIds.shoppingPage), findsOneWidget);
+    expect(_id(TestIds.todoPage), findsNothing);
+    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 2);
+
     await tester.tap(_id(TestIds.navigationTabSettings));
     await tester.pumpAndSettle();
     expect(_id(TestIds.settingsPage), findsOneWidget);
     expect(_id(TestIds.todoPage), findsNothing);
-    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 2);
+    expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 3);
 
     await tester.tap(_id(TestIds.navigationTabBills));
     await tester.pumpAndSettle();
     expect(_id(TestIds.billsPage), findsOneWidget);
+  });
+
+  testWidgets('plans overdue bill reminders when the app starts', (tester) async {
+    final scheduler = RecordingNotificationScheduler();
+    await pumpApp(tester, const AppShell(), scheduler: scheduler);
+    await tester.pumpAndSettle();
+
+    expect(scheduler.calls, greaterThanOrEqualTo(1));
   });
 }

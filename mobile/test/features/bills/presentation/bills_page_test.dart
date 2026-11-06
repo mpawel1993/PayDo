@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:paydo/core/testing/test_ids.dart';
 import 'package:paydo/core/theme/app_colors.dart';
 import 'package:paydo/core/widgets/app_checkbox.dart';
+import 'package:paydo/features/bills/domain/bill.dart';
 import 'package:paydo/features/bills/domain/bill_category.dart';
+import 'package:paydo/features/bills/domain/calendar_date.dart';
 import 'package:paydo/features/bills/domain/year_month.dart';
 import 'package:paydo/features/bills/presentation/bills_page.dart';
 
@@ -17,12 +19,12 @@ final _oct = YearMonth(2026, 10);
 const _personal = 'personal';
 const _company = 'company';
 
-InMemoryBillsRepository _repository({Map<YearMonth, Set<int>> paid = const {}}) => InMemoryBillsRepository(
+InMemoryBillsRepository _repository({Map<(int, YearMonth), BillEntry> entries = const {}}) => InMemoryBillsRepository(
   templates: [
     BillTemplateBuilder().withId(1).withName('Czynsz').startingAt(YearMonth(2026, 1)).build(),
     BillTemplateBuilder().withId(2).withName('ZUS').inCategory(BillCategory.company).startingAt(YearMonth(2026, 1)).build(),
   ],
-  paid: paid,
+  entries: entries,
 );
 
 Future<void> _pump(WidgetTester tester, {InMemoryBillsRepository? bills, Locale locale = const Locale('pl')}) async {
@@ -117,16 +119,16 @@ void main() {
     expect(textOf(tester, TestIds.billsMonthLabel), 'Grudzień 2026');
   });
 
-  testWidgets('swiping left shows the previous month, swiping right the next one', (tester) async {
+  testWidgets('swiping right shows the previous month, swiping left the next one', (tester) async {
     await _pump(tester);
 
-    await tester.fling(byId(TestIds.billsPager), const Offset(-400, 0), 1000);
+    await tester.fling(byId(TestIds.billsPager), const Offset(400, 0), 1000);
     await tester.pumpAndSettle();
     expect(textOf(tester, TestIds.billsMonthLabel), 'Październik 2026');
 
-    await tester.fling(byId(TestIds.billsPager), const Offset(400, 0), 1000);
+    await tester.fling(byId(TestIds.billsPager), const Offset(-400, 0), 1000);
     await tester.pumpAndSettle();
-    await tester.fling(byId(TestIds.billsPager), const Offset(400, 0), 1000);
+    await tester.fling(byId(TestIds.billsPager), const Offset(-400, 0), 1000);
     await tester.pumpAndSettle();
     expect(textOf(tester, TestIds.billsMonthLabel), 'Grudzień 2026');
   });
@@ -158,11 +160,7 @@ void main() {
   testWidgets('unpaid bills of past months are highlighted as overdue', (tester) async {
     await _pump(
       tester,
-      bills: _repository(
-        paid: {
-          _oct: {2},
-        },
-      ),
+      bills: _repository(entries: {(2, _oct): BillEntry(paidAt: DateTime.utc(2026, 10, 10))}),
     );
 
     await tester.tap(byId(TestIds.billsPreviousMonth));
@@ -184,5 +182,65 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(byId(TestIds.billTemplatesPage), findsOneWidget);
+  });
+
+  testWidgets('a bill with a due date that passed is overdue, on the due day it is not', (tester) async {
+    await _pump(
+      tester,
+      bills: _repository(
+        entries: {
+          (1, _nov): BillEntry(dueDate: CalendarDate(2026, 11, 5)),
+          (2, _nov): BillEntry(dueDate: CalendarDate(2026, 11, 6)),
+        },
+      ),
+    );
+
+    expect(textWidget(tester, TestIds.billsRowName(_nov.key, 1)).style?.color, AppColors.danger);
+    expect(textWidget(tester, TestIds.billsRowName(_nov.key, 2)).style?.color, AppColors.text);
+  });
+
+  testWidgets('shows the due date and the payment date under the bill name', (tester) async {
+    await _pump(
+      tester,
+      bills: _repository(entries: {(1, _nov): BillEntry(dueDate: CalendarDate(2026, 11, 20))}),
+    );
+
+    expect(textOf(tester, TestIds.billsRowDetails(_nov.key, 1)), 'Termin: 20.11.2026');
+    expect(byId(TestIds.billsRowDetails(_nov.key, 2)), findsNothing);
+
+    await tester.tap(byId(TestIds.billsRowCheckbox(_nov.key, 1)));
+    await tester.pumpAndSettle();
+    expect(textOf(tester, TestIds.billsRowDetails(_nov.key, 1)), 'Termin: 20.11.2026 · Zapłacono: 6.11.2026');
+
+    await tester.tap(byId(TestIds.billsRowCheckbox(_nov.key, 2)));
+    await tester.pumpAndSettle();
+    expect(textOf(tester, TestIds.billsRowDetails(_nov.key, 2)), 'Zapłacono: 6.11.2026');
+  });
+
+  testWidgets('the due date button on the right sets the due date with a date picker', (tester) async {
+    final repository = _repository();
+    await _pump(tester, bills: repository);
+    expect(byId(TestIds.billsRowDueDateIcon(_nov.key, 1)), findsOneWidget);
+
+    await tester.tap(byId(TestIds.billsRowDueDate(_nov.key, 1)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('20'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    expect(repository.entryOf(1, _nov).dueDate, CalendarDate(2026, 11, 20));
+    expect(textOf(tester, TestIds.billsRowDetails(_nov.key, 1)), 'Termin: 20.11.2026');
+  });
+
+  testWidgets('cancelling the date picker keeps the due date', (tester) async {
+    final repository = _repository(entries: {(1, _nov): BillEntry(dueDate: CalendarDate(2026, 11, 20))});
+    await _pump(tester, bills: repository);
+
+    await tester.tap(byId(TestIds.billsRowDueDate(_nov.key, 1)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Anuluj'));
+    await tester.pumpAndSettle();
+
+    expect(repository.entryOf(1, _nov).dueDate, CalendarDate(2026, 11, 20));
   });
 }

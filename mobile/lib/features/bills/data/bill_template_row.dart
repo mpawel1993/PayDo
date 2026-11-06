@@ -9,6 +9,7 @@ final class BillTemplateRow {
     required this.category,
     required this.startMonth,
     required this.endMonth,
+    this.dueDay,
     required this.createdAt,
   });
 
@@ -18,6 +19,7 @@ final class BillTemplateRow {
     category: row['category']! as String,
     startMonth: row['start_month']! as int,
     endMonth: row['end_month'] as int?,
+    dueDay: row['due_day'] as int?,
     createdAt: row['created_at']! as int,
   );
 
@@ -27,6 +29,7 @@ final class BillTemplateRow {
     category: template.category.name,
     startMonth: template.startMonth.key,
     endMonth: template.endMonth?.key,
+    dueDay: template.dueDay,
     createdAt: createdAt.millisecondsSinceEpoch,
   );
 
@@ -35,6 +38,7 @@ final class BillTemplateRow {
   final String category;
   final int startMonth;
   final int? endMonth;
+  final int? dueDay;
   final int createdAt;
 
   Map<String, Object?> toRow() => {
@@ -43,6 +47,7 @@ final class BillTemplateRow {
     'category': category,
     'start_month': startMonth,
     'end_month': endMonth,
+    'due_day': dueDay,
     'created_at': createdAt,
   };
 
@@ -52,5 +57,6 @@ final class BillTemplateRow {
     category: BillCategory.fromName(category) ?? (throw StateError('Unknown bill category "$category"')),
     startMonth: YearMonth.fromKey(startMonth),
     endMonth: endMonth == null ? null : YearMonth.fromKey(endMonth!),
+    dueDay: dueDay,
   );
 }

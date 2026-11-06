@@ -4,11 +4,15 @@ import '../../../core/state/clock_state.dart';
 import '../domain/bill_category.dart';
 import '../domain/bill_template.dart';
 import '../domain/billing_window.dart';
+import '../domain/calendar_date.dart';
 import '../domain/month_bills.dart';
+import '../domain/reminders/notification_scheduler.dart';
 import '../domain/year_month.dart';
 import 'bills_providers.dart';
 
 final currentMonthState = Provider<YearMonth>((ref) => YearMonth.fromDate(ref.watch(clockState)()));
+
+final todayState = Provider<CalendarDate>((ref) => CalendarDate.fromDateTime(ref.watch(clockState)()));
 
 final billingWindowState = Provider<BillingWindow>((ref) => BillingWindow(ref.watch(currentMonthState)));
 
@@ -33,16 +37,25 @@ class BillTemplatesNotifier extends AsyncNotifier<List<BillTemplate>> {
   @override
   Future<List<BillTemplate>> build() async => (await ref.watch(billsFacadeProvider.future)).templates();
 
-  Future<void> add(String name, BillCategory category) async {
+  Future<void> edit(BillTemplate template, {required String name, required int? dueDay}) async {
     final facade = await ref.read(billsFacadeProvider.future);
-    await facade.addTemplate(name, category);
+    await facade.updateTemplate(template, name: name, dueDay: dueDay);
     state = AsyncData(await facade.templates());
+    ref.invalidate(reminderSyncState);
+  }
+
+  Future<void> add(String name, BillCategory category, {int? dueDay}) async {
+    final facade = await ref.read(billsFacadeProvider.future);
+    await facade.addTemplate(name, category, dueDay: dueDay);
+    state = AsyncData(await facade.templates());
+    ref.invalidate(reminderSyncState);
   }
 
   Future<void> remove(BillTemplate template) async {
     final facade = await ref.read(billsFacadeProvider.future);
     await facade.removeTemplate(template);
     state = AsyncData(await facade.templates());
+    ref.invalidate(reminderSyncState);
   }
 }
 
@@ -63,10 +76,23 @@ class MonthBillsNotifier extends AsyncNotifier<MonthBills> {
     return (await ref.watch(billsFacadeProvider.future)).monthBills(month, templates);
   }
 
+  Future<void> setDueDate(int templateId, CalendarDate? dueDate) async {
+    final current = await future;
+    await (await ref.read(billsFacadeProvider.future)).setDueDate(templateId, month, dueDate);
+    state = AsyncData(current.updated(templateId, (b) => b.withDueDate(dueDate)));
+    ref.invalidate(reminderSyncState);
+  }
+
   Future<void> togglePaid(int templateId) async {
     final current = await future;
-    final paid = !current.bills.firstWhere((b) => b.template.id == templateId).paid;
-    await (await ref.read(billsFacadeProvider.future)).setPaid(templateId, month, paid: paid);
-    state = AsyncData(current.withPaid(templateId, paid: paid));
+    final paid = current.byTemplateId(templateId)?.paid ?? false;
+    final paidAt = await (await ref.read(billsFacadeProvider.future)).setPaid(templateId, month, paid: !paid);
+    state = AsyncData(current.updated(templateId, (b) => paidAt == null ? b.markedUnpaid() : b.markedPaid(paidAt)));
+    ref.invalidate(reminderSyncState);
   }
 }
+
+/// Re-plans overdue notifications; invalidated after every change of bills. Watched by the app shell.
+final reminderSyncState = FutureProvider<List<ScheduledNotification>>(
+  (ref) async => (await ref.watch(billRemindersServiceProvider.future)).reschedule(),
+);

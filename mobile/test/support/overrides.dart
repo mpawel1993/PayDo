@@ -5,9 +5,13 @@ import 'package:paydo/features/settings/application/settings_providers.dart';
 
 import 'fakes/in_memory_bills_repository.dart';
 import 'fakes/in_memory_settings_repository.dart';
+import 'fakes/recording_notification_scheduler.dart';
 
 List<Override> settingsOverrides(InMemorySettingsRepository repository) => [settingsRepositoryProvider.overrideWith((ref) => repository)];
 
-List<Override> billsOverrides(InMemoryBillsRepository repository) => [billsRepositoryProvider.overrideWith((ref) => repository)];
+List<Override> billsOverrides(InMemoryBillsRepository repository, {RecordingNotificationScheduler? scheduler}) => [
+  billsRepositoryProvider.overrideWith((ref) => repository),
+  notificationSchedulerProvider.overrideWithValue(scheduler ?? RecordingNotificationScheduler()),
+];
 
 Override clockOverride(DateTime now) => clockState.overrideWithValue(() => now);

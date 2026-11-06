@@ -66,4 +66,86 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get loadError => 'Nie udało się wczytać danych';
+
+  @override
+  String get navShopping => 'Zakupy';
+
+  @override
+  String billDueDate(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return 'Termin: $dateString';
+  }
+
+  @override
+  String billPaidOn(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return 'Zapłacono: $dateString';
+  }
+
+  @override
+  String billSetDueDate(String name) {
+    return 'Ustaw termin płatności: $name';
+  }
+
+  @override
+  String get reminderTitle => 'Nieopłacony rachunek';
+
+  @override
+  String reminderBody(String name, DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$name – termin płatności minął $dateString. Oznacz rachunek jako opłacony.';
+  }
+
+  @override
+  String get reminderChannelName => 'Przypomnienia o rachunkach';
+
+  @override
+  String get billTemplateDueDayHint => 'Dzień';
+
+  @override
+  String get billTemplateDueDayPickerTitle => 'Dzień terminu płatności';
+
+  @override
+  String get billTemplateNoDueDay => 'Bez terminu';
+
+  @override
+  String billTemplateDueDay(int day) {
+    return 'Termin: $day. dzień miesiąca';
+  }
+
+  @override
+  String billTemplateEdit(String name) {
+    return 'Edytuj $name';
+  }
+
+  @override
+  String get billTemplateEditTitle => 'Edytuj szablon';
+
+  @override
+  String get save => 'Zapisz';
+
+  @override
+  String get cancel => 'Anuluj';
+
+  @override
+  String get yes => 'Tak';
+
+  @override
+  String get no => 'Nie';
+
+  @override
+  String confirmDeleteTemplate(String name) {
+    return 'Czy na pewno usunąć szablon „$name”?';
+  }
+
+  @override
+  String confirmEditTemplate(String name) {
+    return 'Czy na pewno zapisać zmiany w szablonie „$name”?';
+  }
 }
